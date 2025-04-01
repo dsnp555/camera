@@ -6,21 +6,46 @@
     <title>Vehicle Surveillance</title>
 </head>
 <body>
-    <button onclick="openCamera()">Vehicle Surveillance</button>
+    <button onclick="openCamera('front')">Front Camera</button>
+    <button onclick="openCamera('back')">Back Camera</button>
+    <button onclick="stopCamera()" style="display: none;" id="stopButton">Stop Camera</button>
     <video id="video" autoplay playsinline style="width: 100%; display: none;"></video>
 
     <script>
-        function openCamera() {
-            navigator.mediaDevices.getUserMedia({ video: true })
+        let currentStream = null;
+
+        function openCamera(facing) {
+            if (currentStream) {
+                stopCamera();
+            }
+
+            const constraints = {
+                video: {
+                    facingMode: facing === 'front' ? 'user' : 'environment'
+                }
+            };
+
+            navigator.mediaDevices.getUserMedia(constraints)
                 .then(stream => {
+                    currentStream = stream;
                     let video = document.getElementById('video');
                     video.srcObject = stream;
                     video.style.display = "block";
+                    document.getElementById('stopButton').style.display = "block";
                 })
                 .catch(err => {
                     alert("Camera access denied!");
                     console.error(err);
                 });
+        }
+
+        function stopCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+                document.getElementById('video').style.display = "none";
+                document.getElementById('stopButton').style.display = "none";
+            }
         }
     </script>
 </body>
