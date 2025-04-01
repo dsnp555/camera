@@ -1,0 +1,17 @@
+Sure, here's the content for the file: /vehicle-surveillance/vehicle-surveillance/vercel.json
+
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "public/index.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "public/index.html"
+    }
+  ]
+}
